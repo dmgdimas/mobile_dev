@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Случайный фильм</string>
+    <string name="btn_show">Показать фильм</string>
+    <string name="btn_reset">Сбросить список</string>
+    <string name="msg_empty">Фильмы закончились! Нажмите "Сбросить", чтобы начать заново.</string>
+    <string name="msg_reset">Список фильмов обновлен.</string>
+    <string name="msg_start">Нажмите кнопку, чтобы получить рекомендацию</string>
+
+    <string-array name="movies_array">
+        <item>Побег из Шоушенка</item>
+        <item>Крёстный отец</item>
+        <item>Тёмный рыцарь</item>
+        <item>12 разгневанных мужчин</item>
+        <item>Список Шиндлера</item>
+        <item>Властелин колец: Возвращение короля</item>
+        <item>Криминальное чтиво</item>
+    </string-array>
+</resources>

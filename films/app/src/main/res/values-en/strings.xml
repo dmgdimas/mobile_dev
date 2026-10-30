@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Random Film</string>
+    <string name="btn_show">Show Movie</string>
+    <string name="btn_reset">Reset List</string>
+    <string name="msg_empty">No more movies! Press "Reset" to start over.</string>
+    <string name="msg_reset">Movie list refreshed.</string>
+    <string name="msg_start">Press the button to get a recommendation</string>
+
+    <string-array name="movies_array">
+        <item>The Shawshank Redemption</item>
+        <item>The Godfather</item>
+        <item>The Dark Knight</item>
+        <item>12 Angry Men</item>
+        <item>Schindler\'s List</item>
+        <item>The Lord of the Rings: The Return of the King</item>
+        <item>Pulp Fiction</item>
+    </string-array>
+</resources>
