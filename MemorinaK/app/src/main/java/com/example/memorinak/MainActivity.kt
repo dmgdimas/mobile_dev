@@ -6,6 +6,7 @@ import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.Toast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -25,28 +26,27 @@ class MainActivity : AppCompatActivity() {
     ).shuffled()
 
     private val cardBack = R.drawable.squarecat
+    private val totalPairs = 8
+
+    private var firstCard: ImageView? = null
+    private var isLocked = false
+    private var matchedPairs = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // 1. Создаем главный контейнер и сразу центрируем его содержимое
         val layout = LinearLayout(applicationContext).apply {
             orientation = LinearLayout.VERTICAL
-            gravity = Gravity.CENTER // Центрируем всё по вертикали и горизонтали
-            setPadding(16, 16, 16, 16) // Отступы от краев экрана
+            gravity = Gravity.CENTER
+            setPadding(16, 16, 16, 16)
         }
 
         val density = resources.displayMetrics.density
         val marginDp = 8f
         val marginPx = (marginDp * density).toInt()
-
-        val mainPaddingPx = (16f * density).toInt() // Те же 16dp, что и в setPadding
+        val mainPaddingPx = (16f * density).toInt()
         val screenWidth = resources.displayMetrics.widthPixels
-
-        // 2. Корректный расчет доступной ширины (экран минус левый и правый паддинги)
         val availableWidth = screenWidth - (2 * mainPaddingPx)
-
-        // 4 карточки и 5 промежутков (слева, 3 между ними, справа)
         val cardSizePx = (availableWidth - (5 * marginPx)) / 4
 
         val params = LinearLayout.LayoutParams(cardSizePx, cardSizePx).apply {
@@ -68,11 +68,10 @@ class MainActivity : AppCompatActivity() {
             })
         }
 
-        // 3. Создаем ряды и тоже центрируем их содержимое
         val rows = Array(4) {
             LinearLayout(applicationContext).apply {
                 orientation = LinearLayout.HORIZONTAL
-                gravity = Gravity.CENTER // Центрируем карточки внутри ряда
+                gravity = Gravity.CENTER
             }
         }
 
@@ -91,18 +90,45 @@ class MainActivity : AppCompatActivity() {
     }
 
     val colorListener = View.OnClickListener { view ->
+        if (isLocked) return@OnClickListener
         val imageView = view as ImageView
+        if (!imageView.isClickable) return@OnClickListener
 
-        GlobalScope.launch(Dispatchers.Main) {
-            val faceResId = imageView.tag as Int
+        imageView.setImageResource(imageView.tag as Int)
+        imageView.isClickable = false
 
-            imageView.setImageResource(faceResId)
-            imageView.isClickable = false
+        if (firstCard == null) {
+            firstCard = imageView
+        } else {
+            isLocked = true
 
-            delay(1000)
+            val firstResId = firstCard!!.tag as Int
+            val secondResId = imageView.tag as Int
 
-            imageView.setImageResource(cardBack)
-            imageView.isClickable = true
+            GlobalScope.launch(Dispatchers.Main) {
+                delay(1000)
+
+                if (firstResId == secondResId) {
+                    matchedPairs++
+                    firstCard!!.alpha = 0.5f
+                    imageView.alpha = 0.5f
+
+                    if (matchedPairs == totalPairs) {
+                        Toast.makeText(applicationContext, "Поздравляем! Вы нашли все пары!", Toast.LENGTH_LONG).show()
+                    }
+                } else {
+                    firstCard!!.setImageResource(cardBack)
+                    firstCard!!.isClickable = true
+                    firstCard!!.alpha = 1.0f
+
+                    imageView.setImageResource(cardBack)
+                    imageView.isClickable = true
+                    imageView.alpha = 1.0f
+                }
+
+                firstCard = null
+                isLocked = false
+            }
         }
     }
 }
